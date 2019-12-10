@@ -1,0 +1,117 @@
+-- Teclado--
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity teclado is
+Port ( 
+clock, reset: in std_logic;
+fila: in std_logic_vector(3 downto 0); --teclado fila
+led : out std_logic;
+val_fila : out std_logic_vector ( 3 downto 0);
+val_columna : out std_logic_vector ( 3 downto 0)); -- teclado columna
+end teclado;
+ 
+ architecture proceso of teclado is
+   type estado is (s0, s1, s2, s3, s4 );
+   signal pr_state, nx_state: estado;
+   signal x_colum: std_logic_vector( 3 downto 0) :=(others => '0'); 
+ begin 
+   process(clock, reset)
+	begin 
+	   if (reset = '1') then 
+		  pr_state <= s0;
+		elsif (rising_edge(clock)) then
+		  pr_state <= nx_state; 
+		end if;
+	end process;
+	
+    process(pr_state, x_colum, fila)
+	 begin 
+	    case pr_state is
+		   when s0 => 
+			x_colum <="0000";
+			led <= '0';
+			nx_state <= s1;
+			
+			when s1 =>
+			x_colum <="1110";
+     		 if (fila = "0111" ) then
+			   led <= '1';
+			   nx_state <= s1;
+			 elsif (fila = "1011" ) then
+			   led <= '1';
+			   nx_state <= s1;
+			 elsif (fila = "1101" ) then
+			   led <= '1';
+			   nx_state <= s1;
+			 elsif (fila = "1110" ) then
+			   led <= '1';
+			   nx_state <= s1;
+			 else
+			   led <= '0';
+			   nx_state <= s2;
+			 end if; 
+			 
+			 when s2 =>
+			x_colum <="1101";
+     		 if (fila = "0111" ) then
+			   led <= '1';
+			   nx_state <= s2;
+			 elsif (fila = "1011" ) then
+			   led <= '1';
+			   nx_state <= s2;
+			 elsif (fila = "1101" ) then
+			   led <= '1';
+			   nx_state <= s2;
+			 elsif (fila = "1110" ) then
+			   led <= '1';
+			   nx_state <= s2;
+			 else
+			   led <= '0';
+			   nx_state <= s3;
+			 end if; 
+			 
+			 when s3 =>
+			x_colum <="1011";
+     		 if (fila = "0111" ) then
+			   led <= '1';
+			   nx_state <= s3;
+			 elsif (fila = "1011" ) then
+			   led <= '1';
+			   nx_state <= s3;
+			 elsif (fila = "1101" ) then
+			   led <= '1';
+			   nx_state <= s3;
+			 elsif (fila = "1110" ) then
+			   led <= '1';
+			   nx_state <= s3;
+			 else
+			   led <= '0';
+			   nx_state <= s4;
+			 end if; 
+			 
+			 when s4 =>
+			x_colum <="0111";
+     		 if (fila = "0111" ) then
+			   led <= '1';
+			   nx_state <= s4;
+			 elsif (fila = "1011" ) then
+			   led <= '1';
+			   nx_state <= s4;
+			 elsif (fila = "1101" ) then
+			   led <= '1';
+			   nx_state <= s4;
+			 elsif (fila = "1110" ) then
+			   led <= '1';
+			   nx_state <= s4;
+			 else
+			   led <= '0';
+			   nx_state <= s0;
+			 end if; 
+			end case;
+		end process;
+	val_columna <= x_colum;
+	val_fila <= fila;
+end proceso;
