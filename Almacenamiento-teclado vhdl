@@ -1,0 +1,53 @@
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.STD_LOGIC_ARITH.ALL;
+USE IEEE.STD_LOGIC_unSIGNED.ALL;
+
+
+entity almacenamiento is
+port (
+   valor_bcd: in std_logic_vector ( 3 downto 0);
+	clock, val_led : in std_logic ;
+	Buni, Bdec, Bcen : in bit ;
+	unidades, decenas, centenas: out std_logic_vector (3 downto 0)); 
+	
+end almacenamiento ;
+
+architecture proceso of almacenamiento is 
+ signal v_uni, v_dec, v_cen: std_logic_vector ( 3 downto 0 ) := "0000" ;
+  begin 
+   --unidades <= valor_bcd when(Bcen='0' and Bdec='0' and Buni='1') else "0000";
+  -- decenas <= valor_bcd when(Bcen='0' and Bdec='1' and Buni='0') else "0000";
+  -- centenas <= valor_bcd when(Bcen='1' and Bdec='0' and Buni='0') else "0000";
+
+
+			
+
+  process ( clock)
+	 begin
+  if (val_led = '0') then 
+	 v_uni <= v_uni;
+	 v_dec <= v_dec;
+	 v_cen <= v_cen; 
+			  
+  elsif ( rising_edge (clock)) then
+	
+	       if ( buni = '0'  and bdec='0' and bcen='0' ) then 
+	        v_uni <= "0000" ;
+		v_dec <= "0000" ;
+				v_cen <= "0000" ;
+		  elsif ( buni = '1'  and bdec='0' and bcen='0' ) then 
+	        v_uni <= valor_bcd ;
+	  elsif ( buni='0' and bdec = '1' and bcen='0') then
+		  v_dec <= valor_bcd;
+			elsif ( buni='0' and bdec = '0' and bcen = '1') then
+   v_cen <= valor_bcd;
+	  end if;
+			  
+end if ;
+	 end process ;
+unidades <= v_uni;
+	decenas <= v_dec;
+	centenas <= v_cen;
+	  
+end proceso;
