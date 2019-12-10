@@ -1,0 +1,20 @@
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.STD_LOGIC_ARITH.ALL;
+USE IEEE.STD_LOGIC_unSIGNED.ALL;
+
+
+entity bcdacoplador is
+port (
+   	unidad, decena, centena: in std_logic_vector (3 downto 0); 
+	   binario : out std_logic_vector ( 11 downto 0));
+	
+end bcdacoplador ;
+architecture proceso of bcdacoplador is 
+signal d : std_logic_vector ( 11 downto 0);
+begin 
+d (11 downto 8)  <=  centena;
+d (7 downto 4)  <=  decena;
+d (3 downto 0)  <=  unidad;
+binario <= d;
+end proceso ;
