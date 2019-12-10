@@ -1,0 +1,76 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity bcdbinario is   
+port (
+     reloj,inicio,reset: in std_logic; 
+     bcd: in std_logic_vector(11 downto 0);   
+	  binario: out std_logic_vector(7 downto 0);   
+	  fin: out std_logic);
+end bcdbinario;
+
+architecture bcdb of bcdbinario is
+type statetype is (apagado,analizar,iniciar,desplazar,desplazar2,restara,restarb,restarc,final);
+signal state: statetype;
+signal aconvertir: std_logic_vector(19 downto 0);
+signal corrimientos: natural;
+begin
+ process(reloj)
+  begin
+   if reset='0' then
+	  binario(7 downto 0)<="00000000";
+     state<=apagado;
+   elsif reloj'event and reloj='1' then
+    case state is
+     when apagado => fin <='0';
+      if inicio='0' then      
+        aconvertir(19 downto 8)<=bcd;    
+        aconvertir(7 downto 0)<="00000000"; 
+        corrimientos<=0;  
+        state<=analizar;
+      end if;
+     when analizar => 
+      if ((unsigned(aconvertir(19 downto 16))=2 and unsigned(aconvertir(15 downto 12))>4 and unsigned(aconvertir(11 downto 8))>5) or unsigned(aconvertir(19 downto 16))>2 or unsigned(aconvertir(15 downto 12))>9 or unsigned(aconvertir(11 downto 8))>9) then
+        state<=apagado;
+      else state<=iniciar;
+      end if;
+     when iniciar => corrimientos<=corrimientos+1;
+	        state<=desplazar;
+     when desplazar => aconvertir(18 downto 0)<=aconvertir(19 downto 1);
+	        state<=desplazar2;
+     when desplazar2 => 
+      if corrimientos = 8 then 
+          state<=final;
+      elsif unsigned(aconvertir (19 downto 16))> 4  then 
+	 	    state<=restara;
+      elsif unsigned(aconvertir(15 downto 12))> 4 then  
+	       state <=restarb;
+      elsif unsigned(aconvertir(11 downto 8))> 4 then 
+	       state<=restarc;
+	   else  corrimientos<=corrimientos+1;
+	       state<=desplazar;
+		end if; 
+     when restara => aconvertir(19 downto 16)<=std_logic_vector(unsigned(aconvertir(19 downto 16)) - 3);
+	   if unsigned(aconvertir(15 downto 12))> 4 then  
+		    state <=restarb;
+		elsif unsigned(aconvertir(11 downto 8))> 4 then  
+		    state<=restarc;
+		else  corrimientos<=corrimientos+1;
+		    state<=desplazar;
+		end if;
+	when restarb =>  aconvertir(15 downto 12)<=std_logic_vector(unsigned(aconvertir(15 downto 12)) - 3);
+	      if unsigned(aconvertir(11 downto 8))> 4 then 
+		    	state<=restarc;
+			else  corrimientos<=corrimientos+1;
+			   state<=desplazar;
+			end if;
+	when restarc =>  aconvertir(11 downto 8)<=std_logic_vector(unsigned(aconvertir(11 downto 8)) - 3);
+	   corrimientos<=corrimientos+1;state<=desplazar;
+	when final =>  binario(7 downto 0)<=aconvertir(7 downto 0);
+	   fin<='1';
+	   state<=apagado; 
+	end case;
+	end if;
+	end process;
+end bcdb;
