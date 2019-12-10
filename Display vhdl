@@ -1,0 +1,33 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_unsigned.ALL;
+entity display is
+port (
+  sw: in std_logic_vector (3 downto 0);
+ displ : out std_logic_vector (6 downto 0));
+ end display;
+ 
+ architecture proceso of display is
+ begin 
+  displ <="0001000" when sw = "1010" else --A
+          "0000011" when sw = "1011" else --B
+			 "1000110" when sw = "1100" else --C
+			 "0100001" when sw = "1101" else --D
+			 
+			 "0110000" when sw = "0011" else --3
+			 "0000010" when sw = "0110" else --6
+			 "0010000" when sw = "1001" else --9
+			 "0111111" when sw = "1110" else --#
+			 
+			 "0100100" when sw = "0010" else --2
+			 "0010010" when sw = "0101" else --5
+			 "0000000" when sw = "1000" else --8
+			 "1000000" when sw = "0000" else --0
+			 
+			 "1111001" when sw = "0001" else --1
+			 "0011001" when sw = "0100" else --4
+			 "1111000" when sw = "0111" else --7
+			 "0111111" when sw = "1111" ; --*	 
+			 
+			 
+end proceso ;
