@@ -1,0 +1,36 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity filtro_teclado is
+Port ( 
+ fila: in std_logic_vector(3 downto 0);
+ columna: in std_logic_vector(3 downto 0);
+ valor: out std_logic_vector(3 downto 0));
+ end filtro_teclado;
+ 
+architecture proceso of filtro_teclado is 
+signal d: std_logic_vector(3 downto 0);
+begin 
+   d <= "1010" when(columna="1110" and fila="0111") else --A
+        "1011" when(columna="1110" and fila="1011") else --B
+		  "1100" when(columna="1110" and fila="1101") else --C
+		  "1101" when(columna="1110" and fila="1110") else --D
+		 
+		  "0011" when(columna="1101" and fila="0111") else --3
+		  "0110" when(columna="1101" and fila="1011") else --6
+		  "1001" when(columna="1101" and fila="1101") else --9
+		  "1110" when(columna="1101" and fila="1110") else --#
+		  
+		  "0010" when(columna="1011" and fila="0111") else --2
+		  "0101" when(columna="1011" and fila="1011") else --5
+		  "1000" when(columna="1011" and fila="1101") else --8
+		  "0000" when(columna="1011" and fila="1110") else --0
+		  
+		  "0001" when(columna="0111" and fila="0111") else --1
+		  "0100" when(columna="0111" and fila="1011") else --4
+		  "0111" when(columna="0111" and fila="1101") else --7
+		  "1111" when(columna="0111" and fila="1110") else --*
+		  "0000";
+		  
+		valor <= d;
+end proceso;
